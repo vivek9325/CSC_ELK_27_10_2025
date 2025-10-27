@@ -9,3 +9,14 @@
 curl -X PUT "http://localhost:9200/vk_movies" -H 'Content-Type: application/json' -d'
 { "settings": {  "number_of_shards": 1, "number_of_replicas": 1 },  "mappings": { 
     "properties": {"title": { "type": "text" },"genre": { "type": "keyword" },"year": { "type": "integer" }}}}' 
+
+
+ubuntu@ip-172-31-23-72:~$ curl -X POST "http://127.0.0.1:9200/vk_movie/_doc/1" -H 'Content-type:application/json' -d '{"title" : "Titanic", "genre" : "adventure", "year" : 2001}'
+{"_index":"vk_movie","_id":"1","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"_seq_no":0,"_primary_term":1}
+
+ubuntu@ip-172-31-23-72:~$ curl -X GET "http://127.0.0.1:9200/vk_movie/_doc/1"
+{"_index":"vk_movie","_id":"1","_version":1,"_seq_no":0,"_primary_term":1,"found":true,"_source":{"title" : "Titanic", "genre" : "adventure", "year" : 2001}}
+
+
+ubuntu@ip-172-31-23-72:~$ curl -X GET "http://127.0.0.1:9200/vk_movie/_doc/1?pretty"
+
