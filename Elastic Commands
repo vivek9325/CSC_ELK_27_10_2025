@@ -1,0 +1,5 @@
+   81  curl -X GET "http://127.0.0.1:9200/_cat/indices?v"
+   82  curl -X GET "http://127.0.0.1:9200/movies"
+   83  curl -X GET "http://127.0.0.1:9200/movies/_mapping?pretty"
+   84  curl -X GET "http://127.0.0.1:9200/movies/_mapping"
+   85  curl -X GET "http://127.0.0.1:9200/movies/_mapping?pretty"
