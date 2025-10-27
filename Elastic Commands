@@ -107,4 +107,47 @@ ubuntu@ip-172-31-23-72:~$ curl -X PUT "http://localhost:9200/logs-000001" -H 'Co
 }'
 {"acknowledged":true,"shards_acknowledged":true,"index":"logs-000001"}ubuntu@ip-172-31-23-72:~$
 
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ILM Status ----
+ubuntu@ip-172-31-23-72:~$ curl -X GET "http://localhost:9200/_ilm/status"
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ILM Explain----
+
+ubuntu@ip-172-31-23-72:~$ curl -X GET "http://localhost:9200/logs-000001/_ilm/explain"
+{"indices":{"logs-000001":{"index":"logs-000001","managed":true,"policy":"logs_policy","index_creation_date_millis":1761565899064,"ion":"7.27m","lifecycle_date_millis":1761565899064,"age":"7.27m","age_in_millis":436222,"phase":"hot","phase_time_millis":176156589r","action_time_millis":1761565899266,"step":"check-rollover-ready","step_time_millis":1761565899266,"phase_execution":{"policy":"linition":{"min_age":"0ms","actions":{"set_priority":{"priority":100},"rollover":{"max_age":"7d","max_primary_shard_docs":200000000,ubuntu@ip-172-31-23-72:~$
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+View Policy ----
+ubuntu@ip-172-31-23-72:~$ curl -X GET    "http://localhost:9200/_ilm/policy/logs_policy"
+{"logs_policy":{"version":3,"modified_date":"2025-10-27T11:46:03.950Z","policy":{"phases":{"warm":{"min_age":"7d","actions":{"forcemerge":{"max_num_segments":1},"allocate":{"include":{},"exclude":{},"require":{"box_type":"warm"}},"shrink":{"number_of_shards":1,"allow_write_after_shrink":false},"set_priority":{"priority":50}}},"hot":{"min_age":"0ms","actions":{"set_priority":{"priority":100},"rollover":{"max_age":"7d","max_size":"50gb"}}},"delete":{"min_age":"90d","actions":{"delete":{"delete_searchable_snapshot":true}}}}},"in_use_by":{"indices":["logs-000001"],"data_streams":[],"composable_templates":["logs_template"]}}}ubuntu@ip-172-31-23-72:~$
+ubuntu@ip-172-31-23-72:~$
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Delete Policy -----
+ubuntu@ip-172-31-23-72:~$ curl -X DELETE "http://localhost:9200/_ilm/policy/logs_policy"
+{"error":{"root_cause":[{"type":"illegal_argument_exception","reason":"Cannot delete policy [logs_policy]. It is in use by one or more indices: [logs-000001]"}],"type":"illegal_argument_exception","reason":"Cannot delete policy [logs_policy]. It is in use by one or more indices: [logs-000001]"},"status":400}ubuntu@ip-172-31-23-72:~$
+ubuntu@ip-172-31-23-72:~$
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Detach Policy from indexes ----
+
+ubuntu@ip-172-31-23-72:~$ curl -X PUT "http://localhost:9200/logs-000001/_settings" -H 'Content-type:application/json'  -d'
+{ "index.lifecycle.name": null,
+  "index.lifecycle.rollover_alias": null }'
+{"acknowledged":true}ubuntcurl -X DELETE "http://localhost:9200/_ilm/policy/logs_policy"m/policy/logs_policy"
+{"acknowledged":true}ubuntu@ip-172-31-23-72:~$
+
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
