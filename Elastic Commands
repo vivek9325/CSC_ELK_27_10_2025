@@ -77,3 +77,34 @@ curl -X PUT "http://localhost:9200/_ilm/policy/logs_policy" -H 'Content-Type: ap
 }'
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Create Index template and attach with the policy 
+
+ubuntu@ip-172-31-23-72:~$ curl -X PUT "http://localhost:9200/_index_template/logs_template" -H 'Content-Type: application/json' -d'
+{
+  "index_patterns": ["logs-*"],
+  "template": {
+    "settings": {
+      "index.lifecycle.name": "logs_policy",
+      "index.lifecycle.rollover_alias": "logs_alias"
+    }
+  }
+}'
+{"acknowledged":true}ubuntu@ip-172-31-23-72:~$
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Create Index and attach with Index template
+
+ubuntu@ip-172-31-23-72:~$ curl -X PUT "http://localhost:9200/logs-000001" -H 'Content-Type: application/json' -d'  {
+  "aliases": {
+    "logs_alias": {
+      "is_write_index": true
+    }
+  }
+}'
+{"acknowledged":true,"shards_acknowledged":true,"index":"logs-000001"}ubuntu@ip-172-31-23-72:~$
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
